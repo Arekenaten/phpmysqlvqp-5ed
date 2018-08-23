@@ -8,18 +8,18 @@
 <?php # Script 1.5 - predefined.php
 
 // Create a shorthand version of the variable names:
-$file = $_SERVER['SERVER_NAME'];
-$user = $_SERVER['SERVER_PORT'];
-$server = $_SERVER['DOCUMENT_ROOT'];
+$name = $_SERVER['SERVER_NAME'];
+$port = $_SERVER['SERVER_PORT'];
+$docRoot = $_SERVER['DOCUMENT_ROOT'];
 
 // Print the name of this script:
-echo "<p>You are running the file:<br><strong>$file</strong>.</p>\n";
+echo "<p>You are running on:<br><strong>$name</strong>.</p>\n";
 
 // Print the user's information:
-echo "<p>You are viewing this page using:<br><strong>$user</strong></p>\n";
+echo "<p>Your server port:<br><strong>$port</strong></p>\n";
 
 // Print the server's information:
-echo "<p>This server is running:<br><strong>$server</strong>.</p>\n";
+echo "<p>This server root is:<br><strong>$docRoot</strong>.</p>\n";
 
 ?>
 </body>
