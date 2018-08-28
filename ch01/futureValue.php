@@ -18,7 +18,7 @@ $value = $amount * (1 + INTEREST) ** $years;
 $value = number_format($value, 2);
 
 // Print the results:
-echo '<p>The future value of your $' . $amount . ' after ' . $years . ' years is <strong>' . $value . '</strong></p>';
+echo '<p>The future value of your $' . number_format($amount) . ' after ' . $years . ' years is <strong>$' . $value . '</strong></p>';
 
 ?>
 </body>
