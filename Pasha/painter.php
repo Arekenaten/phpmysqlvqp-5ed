@@ -25,7 +25,7 @@ div {text-align:center;}
 <body>
 <?php
 
-  if (!empty($_POST['myName']) && !empty($_POST['myEmail']) && !empty($_POST['myJob']) && !empty($_POST['myZip'])) {
+  if (!empty($_POST['myName']) && !empty($_POST['myEmail']) && !empty($_POST['myZip']) && !empty($_POST['myCity']) && !empty($_POST['myState']) && !empty($_POST['myJob'])) {
     $name = $_POST['myName'];
     $email = $_POST['myEmail'];
     $zip = $_POST['myZip'];
