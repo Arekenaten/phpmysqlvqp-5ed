@@ -1,23 +1,7 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-<head>
-<title>Pasha the Painter Estimates</title>
-<link href="painter.css" rel="stylesheet" type="text/css" />
-<link href="favicon.ico" rel="icon" type="images/x-icon" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-<body>
-<div id="container">
-<h1 id="logo"><img src="painterlogo.gif" alt="Pasha the Painter" width="620" height="120" /></h1>
-<div id="leftcolumn">
-  <ul>
-     <li><a href="index.html">Home</a></li>
-     <li><a href="services.html">Services</a></li>
-     <li><a href="testimonials.html">Testimonials</a></li>
-     <li><a href="estimates.html">Estimates</a></li>
-  </ul>
-</div>
+<?php
+  $pageTitle = "Estimates";
+  include('includes/header.inc.php');
+?>
 <div id="rightcolumn">
   <p>Request a Free Estimate.</p>
   <form method="post" action="http://csweb.hh.nku.edu/csc301/millerc42/pasha/painter.php">
@@ -60,9 +44,9 @@
       <input type="submit" value="Free Estimate" />
     </div>
   </form>
-  <div id="footer">Copyright &copy; 2011 Pasha the Painter<br />
-  <a href="mailto:yourfirstname@yourlastname.com">yourfirstname@yourlastname.com</a>
-  </div>
+  <?php
+    include('includes/footer.inc.php');
+  ?>
 </div>
 </div>
 </body>
