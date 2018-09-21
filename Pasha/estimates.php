@@ -1,24 +1,26 @@
 <?php
   $pageTitle = "Estimates";
   include('includes/header.inc.php');
+
+  // Begin estimate calculation
+  function calculate($length, $width, $paint) {
+    define ("WALL_HEIGHT", 8);
+    if ($paint = "Regular") {
+      $perFoot = 1.75;
+    } else if ($paint = "High Quality") {
+      $perFoot = 2.5;
+    }
+
+    $area = ($length * WALL_HEIGHT) + ($width * WALL_HEIGHT); // Walls
+    $area += $length * $width;
+    $estimate = ($area * $perFoot) * 0.8;
+    return $estimate;
+  }
 ?>
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  if (!empty($_POST['myName']) && !empty($_POST['myEmail']) && is_numeric($_POST['myZip']) && !empty($_POST['myCity']) && !empty($_POST['myState']) && !empty($_POST['myJob'])) {
-    $name = $_POST['myName'];
-    $email = $_POST['myEmail'];
-    $zip = $_POST['myZip'];
-    $city = $_POST['myCity'];
-    $state = $_POST['myState'];
-    $job = $_POST['myJob'];
-
-    $output = '';
-    $output .= "Name: $name<br>";
-    $output .= "Email: $email<br>";
-    $output .= "Zip: $zip<br>";
-    $output .= "City: $city<br>";
-    $output .= "State: $state<br>";
-    $output .= "Type of Job: $job<br>";
+  if (!empty($_POST['myName']) && !empty($_POST['myEmail']) && is_numeric($_POST['myZip']) && !empty($_POST['myCity']) && !empty($_POST['myState']) && is_numeric($_POST['roomLength']) && is_numeric($_POST['roomWidth'])) {
+    echo "Cost of Paint Job is approximate $" . round(calculate($_POST['roomLength'], $_POST['roomWidth'], $_POST['paint_type']), 2);
   } else {
     $output = '<span style="color: red; font-weight: bold;">';
     $errorOutput = 'You forgot to enter';
@@ -37,12 +39,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['myState'])) {
       $output .= "$errorOutput your State!<br>";
     }
-    if (empty($_POST['myJob'])) {
-      $output .= "$errorOutput the Type of Job!<br>";
+    if (!is_numeric($_POST['roomLength'])) {
+      $output .= "Your room length is not a number!<br>";
+    }
+    if (!is_numeric($_POST['roomWidth'])) {
+      $output .= "Your room width is not a number!<br>";
+    }
+    if (!isset($_POST['paint_type'])) {
+      $output .= "You need to pick a Paint Type!<br>";
     }
     $output .= '</span>';
+    echo "<p>$output</p>";
   }
-  echo "<p>$output</p>";
 } // End of main submission IF.
 ?>
 <div id="rightcolumn">
@@ -82,10 +90,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ?>
       </select>
     </div>
+
     <div class="myRow">
-      <label class="labelCol" for="myJob"><span style="color:red;">*</span>Type of Job: </label>
-      <textarea name="myJob" id="myJob" rows="2" cols="20"><?php if (isset($_POST['myJob'])) echo $_POST['myJob'];?></textarea>
+      <label class="labelCol" for="roomLength"><span style="color:red;">*</span>Room Length: </label>
+      <input type="text" name="roomLength" id="roomLength" value="<?php if (isset($_POST['roomLength'])) echo $_POST['roomLength'];?>"/>
     </div>
+
+    <div class="myRow">
+      <label class="labelCol" for="roomWidth"><span style="color:red;">*</span>Room Width: </label>
+      <input type="text" name="roomWidth" id="roomWidth" value="<?php if (isset($_POST['roomWidth'])) echo $_POST['roomWidth'];?>"/>
+    </div>
+
+    <?php
+      function create_paint_radio($value) {
+        // Start the element:
+        echo '<input type="radio" name="paint_type" value="' . $value . '"';
+        // Check for stickiness:
+        if (isset($_POST['paint_type']) && ($_POST['paint_type'] == $value)) {
+          echo ' checked="checked"';
+        }
+        // Complete the element:
+        echo "> $value ";
+      } // End of create_gallon_radio() function.
+    ?>
+
+    <div class="myRow">
+      <label class="labelCol" for="myPaint"><span style="color:red;">*</span>Paint Type: </label>
+      <?php
+        create_paint_radio('Regular');
+        create_paint_radio('High Quality');
+      ?>
+    </div>
+
     <div class="mySubmit">
       <input type="submit" value="Free Estimate" />
     </div>
