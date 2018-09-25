@@ -5,13 +5,13 @@
   // Begin estimate calculation
   function calculate($length, $width, $paint) {
     define ("WALL_HEIGHT", 8);
-    if ($paint = "Regular") {
+    if ($paint == "Regular") {
       $perFoot = 1.75;
-    } else if ($paint = "High Quality") {
+    } else {
       $perFoot = 2.5;
     }
 
-    $area = ($length * WALL_HEIGHT) + ($width * WALL_HEIGHT); // Walls
+    $area = 2 * ($length * WALL_HEIGHT) + 2 * ($width * WALL_HEIGHT); // Walls
     $area += $length * $width;
     $estimate = ($area * $perFoot) * 0.8;
     return $estimate;
