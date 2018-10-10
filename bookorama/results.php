@@ -1,54 +1,64 @@
+<?php
+  if ($_SERVER['REQUEST_METHOD']=='POST') {
+    require('mysqli_connect.php');
+
+    if (isset($_POST['searchtype'])) {
+      $searchtype=mysqli_real_escape_string($dbc, $_POST['searchtype']);
+    } else {
+      echo "You have not entered the search type.<br />"
+           ."Please go back and try again.";
+      exit;
+    }
+    if (isset($_POST['searchterm'])) {
+      $searchterm=mysqli_real_escape_string($dbc, $_POST['searchterm']);
+    } else {
+      echo "You have not entered the search term.<br />"
+           ."Please go back and try again.";
+      exit;
+    }
+
+    $query = "select * from customers where ".$searchtype." like '%".$searchterm."%'";
+    $r = @mysqli_query($dbc, $query);
+
+    $num_results = mysqli_num_rows($r);
+
+    echo "<p>Number of customers found: ".$num_results."</p>";
+
+    for ($i=0; $i <$num_results; $i++) {
+       $row = $r->fetch_assoc();
+       echo "<p><strong>".($i+1).". Name: ";
+       echo htmlspecialchars(stripslashes($row['name']));
+       echo "<br />Address: ";
+       echo stripslashes($row['address']);
+       echo "<br />City: ";
+       echo stripslashes($row['city']);
+       echo "</p>";
+    }
+
+    mysqli_free_result($r);
+    mysqli_close($dbc);
+  }
+?>
 <html>
 <head>
-  <title>Book-O-Rama Search Results</title>
+  <title>Book-O-Rama Customer Search</title>
 </head>
+
 <body>
-<h1>Book-O-Rama Search Results</h1>
-<?php
-  // create short variable names
-  $searchtype=$_POST['searchtype'];
-  $searchterm=trim($_POST['searchterm']);
+  <h1>Book-O-Rama Customer Search</h1>
 
-  if (!$searchtype || !$searchterm) {
-     echo 'You have not entered search details.  Please go back and try again.';
-     exit;
-  }
+  <form action="results.php" method="post">
+    Choose Search Type:<br />
+    <select name="searchtype">
+      <option value="name">Name</option>
+      <option value="city">City</option>
+    </select>
+    <br />
+    Enter Search Term:<br />
+    <input name="searchterm" type="text" size="40">
+    <br />
+    <input type="submit" name="submit" value="Search">
+  </form>
 
-  if (!get_magic_quotes_gpc()){
-    $searchtype = addslashes($searchtype);
-    $searchterm = addslashes($searchterm);
-  }
-
-  @ $db = new mysqli('localhost', 'bookorama', 'bookorama123', 'books');
-
-  if (mysqli_connect_errno()) {
-     echo 'Error: Could not connect to database.  Please try again later.';
-     exit;
-  }
-
-  $query = "select * from books where ".$searchtype." like '%".$searchterm."%'";
-  $result = $db->query($query);
-
-  $num_results = $result->num_rows;
-
-  echo "<p>Number of books found: ".$num_results."</p>";
-
-  for ($i=0; $i <$num_results; $i++) {
-     $row = $result->fetch_assoc();
-     echo "<p><strong>".($i+1).". Title: ";
-     echo htmlspecialchars(stripslashes($row['title']));
-     echo "</strong><br />Author: ";
-     echo stripslashes($row['author']);
-     echo "<br />ISBN: ";
-     echo stripslashes($row['isbn']);
-     echo "<br />Price: ";
-     echo stripslashes($row['price']);
-     echo "</p>";
-  }
-
-  $result->free();
-  $db->close();
-
-?>
 </body>
 </html>
