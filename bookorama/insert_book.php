@@ -31,17 +31,19 @@
       exit;
     }
 
-    $query = "insert into books values
-              ('".$isbn."', '".$author."', '".$title."', '".$price."')";
-    $r = @mysqli_query($dbc, $query); // Run the query.
+    $q = 'insert into books (isbn, author, title, price) values (?, ?, ?, ?)';
+    $stmt = mysqli_prepare($dbc, $q);
+    mysqli_stmt_bind_param($stmt, 'issd' ,$isbn, $author, $title, $price);
 
-    if ($r) {
-        echo  "<p>The book was inserted.</p>";
+    mysqli_stmt_execute($stmt);
+
+    if (mysqli_stmt_affected_rows($stmt) == 1) {
+      echo '<p>Book added.</p>';
     } else {
-    	  echo '<h1>System Error</h1>';
-        echo '<p>' . mysqli_error($dbc) . '<br><br>Query: ' . $query . '</p>';
+      echo '<p>' . mysqli_stmt_error($stmt) . '</p>';
     }
 
+    mysqli_stmt_close($stmt);
     mysqli_close($dbc);
   }
 ?>

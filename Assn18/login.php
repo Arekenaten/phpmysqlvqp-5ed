@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	require('includes/login_functions.inc.php');
 
 	// Need the database connection:
-	require('./mysqli_connect.php');
+	require('./includes/mysqli_connect.php');
 
 	// Check the login:
 	list($check, $data) = check_login($dbc, $_POST['email'], $_POST['pass']);
@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// Set the cookies:
 		setcookie('user_id', $data['user_id']);
 		setcookie('first_name', $data['first_name']);
+		setcookie('last_name', $data['last_name']);
 
 		// Redirect:
 		redirect_user('loggedin.php');

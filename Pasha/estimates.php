@@ -1,7 +1,6 @@
 <?php
   $pageTitle = "Estimates";
   include('includes/header.inc.php');
-
   // Begin estimate calculation
   function calculate($length, $width, $paint) {
     define ("WALL_HEIGHT", 8);
@@ -10,7 +9,6 @@
     } else {
       $perFoot = 2.5;
     }
-
     $area = 2 * ($length * WALL_HEIGHT) + 2 * ($width * WALL_HEIGHT); // Walls
     $area += $length * $width;
     $estimate = ($area * $perFoot) * 0.8;
@@ -19,7 +17,7 @@
 ?>
 <?php
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-  if (!empty($_POST['myName']) && !empty($_POST['myEmail']) && is_numeric($_POST['myZip']) && !empty($_POST['myCity']) && !empty($_POST['myState']) && is_numeric($_POST['roomLength']) && is_numeric($_POST['roomWidth'])) {
+  if (!empty($_POST['myName']) && filter_var(($_POST['myEmail']), FILTER_VALIDATE_EMAIL) && preg_match('/[0-9]{5}-?([0-9]{5})?/', $_POST['myZip']) && preg_match("/[A-Z]{1}.+[a-z]+/", $_POST['myCity']) && !empty($_POST['myState']) && is_numeric($_POST['roomLength']) && is_numeric($_POST['roomWidth'])) {
     echo "Cost of Paint Job is approximate $" . round(calculate($_POST['roomLength'], $_POST['roomWidth'], $_POST['paint_type']), 2);
   } else {
     $output = '<span style="color: red; font-weight: bold;">';
@@ -27,14 +25,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (empty($_POST['myName'])) {
       $output .= "$errorOutput your Name!<br>";
     }
-    if (empty($_POST['myEmail'])) {
-      $output .= "$errorOutput your E-mail!<br>";
+    if (!filter_var($_POST['myEmail'], FILTER_VALIDATE_EMAIL)) {
+      $output .= "You have not entered a valid E-mail!<br>";
     }
-    if (!is_numeric($_POST['myZip'])) {
-      $output .= "Your zip Code is not a number!<br>";
+    if (!preg_match('/[0-9]{5}-?([0-9]{5})?/', $_POST['myZip'])) {
+      $output .= "Your zip Code is not valid!<br>";
     }
-    if (empty($_POST['myCity'])) {
-      $output .= "$errorOutput your City!<br>";
+    if (!preg_match('/^[A-Z]{1}.+[a-z]+$/', $_POST['myCity'])) {
+      $output .= "You have not properly formatted your City!<br>";
     }
     if (empty($_POST['myState'])) {
       $output .= "$errorOutput your State!<br>";
@@ -58,11 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <form method="post" action="http://csweb.hh.nku.edu/csc301/millerc42/pasha/estimates.php">
     <div class="myRow">
       <label class="labelCol" for="myName"><span style="color:red;">*</span>Name: </label>
-      <input type="text" name="myName" id="myName" value="<?php if (isset($_POST['myName'])) echo $_POST['myName'];?>" />
+      <input type="text" name="myName" id="myName" value="<?php if (isset($_POST['myName'])) echo strip_tags($_POST['myName']);?>" />
     </div>
     <div class="myRow">
       <label class="labelCol" for="myEmail"><span style="color:red;">*</span>E-mail: </label>
-      <input type="text" name="myEmail" id="myEmail" value="<?php if (isset($_POST['myEmail'])) echo $_POST['myEmail'];?>"/>
+      <input type="text" name="myEmail" id="myEmail" value="<?php if (isset($_POST['myEmail'])) echo strip_tags($_POST['myEmail']);?>"/>
     </div>
     <div class="myRow">
       <label class="labelCol" for="myZip"><span style="color:red;">*</span>Zip Code: </label>
@@ -70,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     </div>
     <div class="myRow">
       <label class="labelCol" for="myCity"><span style="color:red;">*</span>City: </label>
-      <input type="text" name="myCity" id="myCity" value="<?php if (isset($_POST['myCity'])) echo $_POST['myCity'];?>"/>
+      <input type="text" name="myCity" id="myCity" value="<?php if (isset($_POST['myCity'])) echo strip_tags($_POST['myCity']);?>"/>
     </div>
 
     <?php

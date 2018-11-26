@@ -1,4 +1,4 @@
-<?php # Script 13.7 - register.php #3
+<?php # Script 9.5 - register.php #2
 // This script performs an INSERT query to add a record to the users table.
 
 $page_title = 'Register';
@@ -7,7 +7,7 @@ include('includes/header.html');
 // Check for form submission:
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	require('../mysqli_connect.php'); // Connect to the db.
+	require('./mysqli_connect.php'); // Connect to the db.
 
 	$errors = []; // Initialize an error array.
 
@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		if ($_POST['pass1'] != $_POST['pass2']) {
 			$errors[] = 'Your password did not match the confirmed password.';
 		} else {
-			$p = password_hash(trim($_POST['pass1']), PASSWORD_DEFAULT);
+			$p = mysqli_real_escape_string($dbc, trim($_POST['pass1']));
 		}
 	} else {
 		$errors[] = 'You forgot to enter your password.';
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		// Register the user in the database...
 
 		// Make the query:
-		$q = "INSERT INTO users (first_name, last_name, email, pass, registration_date) VALUES ('$fn', '$ln', '$e', '$p', NOW() )";
+		$q = "INSERT INTO users (first_name, last_name, email, pass, registration_date) VALUES ('$fn', '$ln', '$e', SHA2('$p', 512), NOW() )";
 		$r = @mysqli_query($dbc, $q); // Run the query.
 		if ($r) { // If it ran OK.
 
