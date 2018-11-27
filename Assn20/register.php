@@ -7,7 +7,7 @@ include('includes/header.html');
 // Check for form submission:
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-	require('../mysqli_connect.php'); // Connect to the db.
+	require('mysqli_connect.php'); // Connect to the db.
 
 	$errors = []; // Initialize an error array.
 
@@ -26,21 +26,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 	}
 
 	// Check for an email address:
-	if (empty($_POST['email'])) {
-		$errors[] = 'You forgot to enter your email address.';
+	if (!preg_match('/^\w{2,}@\w{2,}\.\w{2,4}$/', $_POST['email'])) {
+		$errors[] = 'You have not entered a valid email address.';
 	} else {
 		$e = mysqli_real_escape_string($dbc, trim($_POST['email']));
 	}
 
 	// Check for a password and match against the confirmed password:
-	if (!empty($_POST['pass1'])) {
+	$uppercase = preg_match('/[A-Z]/', $_POST['pass1']);
+	$lowercase = preg_match('/[a-z]/', $_POST['pass1']);
+	$number = preg_match('/[0-9]/', $_POST['pass1']);
+
+	if($uppercase && $lowercase && $number && strlen($_POST['pass1']) >= 8) {
 		if ($_POST['pass1'] != $_POST['pass2']) {
 			$errors[] = 'Your password did not match the confirmed password.';
 		} else {
 			$p = mysqli_real_escape_string($dbc, trim($_POST['pass1']));
 		}
 	} else {
-		$errors[] = 'You forgot to enter your password.';
+		$errors[] = 'Your password must be at least 8 characters consisting of one uppercase letter, one lowercase letter, and at least one number.';
 	}
 
 	if (empty($errors)) { // If everything's OK.
@@ -54,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
 			// Print a message:
 			echo '<h1>Thank you!</h1>
-		<p>You are now registered. In Chapter 12 you will actually be able to log in!</p><p><br></p>';
+		<p>You are now registered.</p>';
 
 		} else { // If it did not run OK.
 
