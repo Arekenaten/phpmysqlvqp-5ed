@@ -1,50 +1,46 @@
 <?php
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    require('mysqli_connect.php');
+    require('mysqli_oop_connect.php');
 
-    if (isset($_POST['isbn'])) {
-      $isbn=mysqli_real_escape_string($dbc, $_POST['isbn']);
-    } else {
+    if (empty($_POST['isbn'])) {
       echo "You have not entered the ISBN.<br />"
            ."Please go back and try again.";
       exit;
-    }
-    if (isset($_POST['author'])) {
-      $author=mysqli_real_escape_string($dbc, $_POST['author']);
     } else {
+      $isbn = $mysqli->real_escape_string(trim($_POST['isbn']));
+    }
+    if (empty($_POST['author'])) {
       echo "You have not entered the Author.<br />"
            ."Please go back and try again.";
       exit;
-    }
-    if (isset($_POST['title'])) {
-      $title=mysqli_real_escape_string($dbc, $_POST['title']);
     } else {
+      $author = $mysqli->real_escape_string(trim($_POST['author']));
+    }
+    if (empty($_POST['title'])) {
       echo "You have not entered the title.<br />"
            ."Please go back and try again.";
       exit;
-    }
-    if (isset($_POST['price'])) {
-      $price=mysqli_real_escape_string($dbc, $_POST['price']);
     } else {
+      $title = $mysqli->real_escape_string(trim($_POST['title']));
+    }
+    if (empty($_POST['price'])) {
       echo "You have not entered the price.<br />"
            ."Please go back and try again.";
       exit;
+    } else {
+      $price = $mysqli->real_escape_string(trim($_POST['price']));
     }
 
-    $q = 'insert into books (isbn, author, title, price) values (?, ?, ?, ?)';
-    $stmt = mysqli_prepare($dbc, $q);
-    mysqli_stmt_bind_param($stmt, 'issd' ,$isbn, $author, $title, $price);
+    $q = "insert into books (isbn, author, title, price) VALUES ('$isbn', '$author', '$title', '$price')";
+    $r = @$mysqli->query($q);
 
-    mysqli_stmt_execute($stmt);
-
-    if (mysqli_stmt_affected_rows($stmt) == 1) {
+    if ($mysqli->affected_rows == 1) {
       echo '<p>Book added.</p>';
     } else {
-      echo '<p>' . mysqli_stmt_error($stmt) . '</p>';
+      echo '<p>' . $mysqli->error . '</p>';
     }
-
-    mysqli_stmt_close($stmt);
-    mysqli_close($dbc);
+    $mysqli->close();
+    unset($mysqli);
   }
 ?>
 <html>
